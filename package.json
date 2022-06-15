@@ -1,17 +1,18 @@
 {
-  "private": true,
-  "name": "dumi-template",
-  "version": "1.0.0",
+  "private": false,
+  "name": "heils-dumi",
+  "version": "0.0.29",
   "scripts": {
     "start": "dumi dev",
     "docs:build": "dumi build",
     "docs:deploy": "gh-pages -d docs-dist",
     "build": "father-build",
     "deploy": "npm run docs:build && npm run docs:deploy",
-    "release": "npm run build && npm publish",
     "prettier": "prettier --write \"**/*.{js,jsx,tsx,ts,less,md,json}\"",
     "test": "umi-test",
-    "test:coverage": "umi-test --coverage"
+    "test:coverage": "umi-test --coverage",
+    "prepare": "npm --no-git-tag-version version patch",
+    "release": "npm run build && npm run prepare && npm publish"
   },
   "main": "dist/index.js",
   "module": "dist/index.esm.js",
@@ -21,7 +22,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/umijs/dumi-template",
+    "url": "https://github.com/595624187/dumi-demo.git",
     "branch": "main"
   },
   "lint-staged": {
@@ -33,8 +34,10 @@
     ]
   },
   "dependencies": {
+    "@knight-lab/timelinejs": "^3.8.21",
     "antd": "^4.21.0",
-    "react": "^16.12.0"
+    "react": "^17.0.2",
+    "supports-color": "^9.2.2"
   },
   "devDependencies": {
     "@umijs/test": "^3.0.5",

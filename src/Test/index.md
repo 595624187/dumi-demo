@@ -12,6 +12,6 @@ Demo:
 
 ```jsx
 import React from 'react';
-import { Test } from 'dumi-template';
+import { Test } from 'heils-dumi';
 export default () => <Test />;
 ```

@@ -16,13 +16,22 @@ import {
   EllipsisOutlined,
   SettingOutlined,
 } from '@ant-design/icons';
+import 'antd/dist/antd.less';
 import './index.less';
 const { Panel } = Collapse;
 const { Option } = Select;
 const { TabPane } = Tabs;
 const { TextArea } = Input;
 function index(props) {
-  const [panels, setPanels] = useState([
+  const [panels, setPanels] = useState<
+    {
+      name: string;
+      valuable: boolean;
+      source: string;
+      type: string;
+      coordinate: number[] | string[];
+    }[]
+  >([
     {
       name: '名称' + 0,
       valuable: true,
@@ -31,7 +40,7 @@ function index(props) {
       coordinate: [0, 0, 0, 0],
     },
   ]);
-  const [selectPanel, setSelectPanel] = useState(0);
+  const [selectPanel, setSelectPanel] = useState<string | number>(0);
   function addPanel(e) {
     e?.stopPropagation();
     const obj = {
@@ -109,7 +118,7 @@ function index(props) {
                   }}
                   onDoubleClick={e => {
                     e.stopPropagation();
-                    const element = e.target;
+                    const element: any = e.target;
                     var oldhtml = element.innerHTML;
                     //创建新的input元素
                     var newobj = document.createElement('input');
@@ -120,9 +129,12 @@ function index(props) {
                     //为新增元素添加光标离开事件
                     newobj.style.outline = 'none';
                     newobj.style.background = 'none';
-                    newobj.onblur = function() {
+                    newobj.onblur = function(e: any) {
+                      console.log('----');
+                      console.log(e.target);
+                      console.log(this);
                       element.innerHTML =
-                        this.value == oldhtml ? oldhtml : this.value;
+                        e.target.value == oldhtml ? oldhtml : e.target.value;
                       panels[index].name = element.innerHTML;
                       setPanels([...panels]);
                       //当触发时判断新增元素值是否为空，为空则不修改，并返回原有值
@@ -160,7 +172,6 @@ function index(props) {
                   >
                     &nbsp;
                     <Button
-                      type="danger"
                       onClick={e => {
                         e.stopPropagation();
                       }}
@@ -193,9 +204,8 @@ function index(props) {
                   </Select>
                 </Descriptions.Item>
               </Descriptions>
-
               <Tabs
-                defaultActiveKey={1}
+                defaultActiveKey={'1'}
                 onChange={e => {
                   console.log(e);
                 }}
@@ -256,7 +266,7 @@ function index(props) {
                   />
                 </TabPane>
                 <TabPane tab="多边形" key={2}>
-                  <TextArea row={5} />
+                  <TextArea size="middle" />
                 </TabPane>
               </Tabs>
             </Panel>
