@@ -11,27 +11,15 @@ import {
   Popconfirm,
   message,
 } from 'antd';
-import {
-  EditOutlined,
-  EllipsisOutlined,
-  SettingOutlined,
-} from '@ant-design/icons';
 import 'antd/dist/antd.less';
 import './index.less';
+
 const { Panel } = Collapse;
 const { Option } = Select;
 const { TabPane } = Tabs;
 const { TextArea } = Input;
-function index(props) {
-  const [panels, setPanels] = useState<
-    {
-      name: string;
-      valuable: boolean;
-      source: string;
-      type: string;
-      coordinate: number[] | string[];
-    }[]
-  >([
+function Index(props) {
+  const [panels, setPanels] = useState([
     {
       name: '名称' + 0,
       valuable: true,
@@ -40,9 +28,9 @@ function index(props) {
       coordinate: [0, 0, 0, 0],
     },
   ]);
-  const [selectPanel, setSelectPanel] = useState<string | number>(0);
+  const [selectPanel, setSelectPanel] = useState(0);
   function addPanel(e) {
-    e?.stopPropagation();
+    e.stopPropagation();
     const obj = {
       name: '名称' + (panels.length + 1),
       valuable: true,
@@ -52,24 +40,55 @@ function index(props) {
     };
     setPanels([...panels, obj]);
   }
-
+  const handleDClick = (e, index) => {
+    e.stopPropagation();
+    const element = e.target;
+    var oldhtml = element.innerHTML;
+    //创建新的input元素
+    var newobj = document.createElement('input');
+    //为新增元素添加类型
+    newobj.type = 'text';
+    //为新增元素添加value值
+    newobj.value = oldhtml;
+    //为新增元素添加光标离开事件
+    newobj.style.outline = 'none';
+    newobj.style.background = 'none';
+    newobj.style.width = '80px';
+    newobj.style.width = '80px';
+    newobj.onblur = function(e) {
+      element.innerHTML = e.target.value == oldhtml ? oldhtml : e.target.value;
+      panels[index].name = element.innerHTML;
+      setPanels([...panels]);
+      //当触发时判断新增元素值是否为空，为空则不修改，并返回原有值
+    };
+    //设置该标签的子节点为空
+    element.innerHTML = '';
+    //添加该标签的子节点，input对象
+    element.appendChild(newobj);
+    //设置选择文本的内容或设置光标位置（两个参数：start,end；start为开始位置，end为结束位置；如果开始位置和结束位置相同则就是光标位置）
+    newobj.setSelectionRange(0, oldhtml.length);
+    //设置获得光标
+    newobj.focus();
+  };
   const delPanel = index => {
     panels.splice(index, 1);
     setPanels([...panels]);
+    setSelectPanel([]);
   };
 
-  const confirm = e => {
+  const confirm = (event, index) => {
+    // event.stopPropagation();
     message.success('删除成功！');
-    delPanel(e);
+    delPanel(index);
   };
 
   const cancel = e => {
-    console.log(e);
+    e.stopPropagation();
   };
-  useEffect(() => {}, []);
   return (
     <Card
       className="main"
+      size="small"
       title="我是标题"
       extra={
         <>
@@ -93,18 +112,12 @@ function index(props) {
           </Button>
         </>
       }
-      actions={[
-        <SettingOutlined key="setting" />,
-        <EditOutlined key="edit" />,
-        <EllipsisOutlined key="ellipsis" />,
-      ]}
-      style={{ padding: '0', width: '500px' }}
+      actions={[]}
     >
       <Collapse
-        defaultActiveKey={[0]}
+        defaultActiveKey={[]}
         activeKey={[selectPanel]}
         onChange={e => {
-          console.log(e);
           setSelectPanel(e[1]);
         }}
       >
@@ -116,38 +129,7 @@ function index(props) {
                   onClick={e => {
                     e.stopPropagation();
                   }}
-                  onDoubleClick={e => {
-                    e.stopPropagation();
-                    const element: any = e.target;
-                    var oldhtml = element.innerHTML;
-                    //创建新的input元素
-                    var newobj = document.createElement('input');
-                    //为新增元素添加类型
-                    newobj.type = 'text';
-                    //为新增元素添加value值
-                    newobj.value = oldhtml;
-                    //为新增元素添加光标离开事件
-                    newobj.style.outline = 'none';
-                    newobj.style.background = 'none';
-                    newobj.onblur = function(e: any) {
-                      console.log('----');
-                      console.log(e.target);
-                      console.log(this);
-                      element.innerHTML =
-                        e.target.value == oldhtml ? oldhtml : e.target.value;
-                      panels[index].name = element.innerHTML;
-                      setPanels([...panels]);
-                      //当触发时判断新增元素值是否为空，为空则不修改，并返回原有值
-                    };
-                    //设置该标签的子节点为空
-                    element.innerHTML = '';
-                    //添加该标签的子节点，input对象
-                    element.appendChild(newobj);
-                    //设置选择文本的内容或设置光标位置（两个参数：start,end；start为开始位置，end为结束位置；如果开始位置和结束位置相同则就是光标位置）
-                    newobj.setSelectionRange(0, oldhtml.length);
-                    //设置获得光标
-                    newobj.focus();
-                  }}
+                  onDoubleClick={event => handleDClick(event, index)}
                 >
                   名字1
                 </div>
@@ -165,15 +147,15 @@ function index(props) {
                   </Button>
                   <Popconfirm
                     title="确定要删除吗？"
-                    onConfirm={index => confirm(index)}
+                    onConfirm={(event, index) => confirm(event, index)}
                     onCancel={cancel}
                     okText="Yes"
                     cancelText="No"
                   >
                     &nbsp;
                     <Button
-                      onClick={e => {
-                        e.stopPropagation();
+                      onClick={() => {
+                        setSelectPanel(selectPanel);
                       }}
                     >
                       删除
@@ -183,21 +165,24 @@ function index(props) {
               }
             >
               <Descriptions>
-                <Descriptions.Item label="是否有效" span={3}>
-                  <Select defaultValue={true}>
+                <Descriptions.Item span={2}>是否有效:</Descriptions.Item>
+                <Descriptions.Item span={1.5}>
+                  <Select defaultValue={true} size="middle">
                     <Option value={true}>有效</Option>
                     <Option value={false}>无效</Option>
                   </Select>
                 </Descriptions.Item>
-                <Descriptions.Item label="ROI来源" span={3}>
-                  <Select defaultValue={0}>
+                <Descriptions.Item span={2}>ROI来源:</Descriptions.Item>
+                <Descriptions.Item span={1.5}>
+                  <Select defaultValue={0} size="middle">
                     <Option value={0}>本地</Option>
                     <Option value={1}>远程</Option>
                     <Option value={2}>文件</Option>
                   </Select>
                 </Descriptions.Item>
-                <Descriptions.Item label="本地ROi类型" span={3}>
-                  <Select defaultValue={0}>
+                <Descriptions.Item span={2}>本地ROi类型:</Descriptions.Item>
+                <Descriptions.Item span={1.5}>
+                  <Select defaultValue={0} size="middle">
                     <Option value={0}>本地</Option>
                     <Option value={1}>远程</Option>
                     <Option value={2}>文件</Option>
@@ -277,4 +262,4 @@ function index(props) {
   );
 }
 
-export default index;
+export default Index;

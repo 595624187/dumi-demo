@@ -6,7 +6,7 @@ nav:
 
 # Input-business
 
-```tsx
+```jsx
 import React from 'react';
 import { InputBusiness } from 'heils-dumi';
 export default () => <InputBusiness />;

@@ -1,0 +1,22 @@
+.rect-main .rect-init {
+  margin-bottom: 4px;
+}
+.rect-main .rect-init .rect-title {
+  padding-bottom: 3px;
+}
+.rect-main .rect-init .rect-content {
+  display: flex;
+  flex-direction: column;
+}
+.rect-main .rect-init .rect-content .rect-item {
+  display: flex;
+  flex-direction: row;
+}
+.rect-main .rect-prop {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+}
+.rect-main .rect-prop .rect-item > div {
+  width: 100%;
+}

@@ -21,5 +21,8 @@ export default defineConfig({
       path: 'https://github.com/umijs/dumi-template',
     },
   ],
+  theme: {
+    'primary-color': '#282828',
+  },
   // more config: https://d.umijs.org/config
 });
